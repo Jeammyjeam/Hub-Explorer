@@ -6,7 +6,6 @@ type GetResourcesParams = {
   search?: string;
   author?: string;
   sort?: "downloads" | "likes" | "updated";
-  limit?: number;
   direction?: "-1";
 };
 

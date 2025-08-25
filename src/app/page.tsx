@@ -17,11 +17,11 @@ async function ResourceList({ q, type }: SearchParams) {
 
   try {
     if (searchType === "models") {
-      resources = await getModels({ search: q, sort, limit: 24 });
+      resources = await getModels({ search: q, sort });
     } else if (searchType === "datasets") {
-      resources = await getDatasets({ search: q, sort, limit: 24 });
+      resources = await getDatasets({ search: q, sort });
     } else if (searchType === "spaces") {
-      resources = await getSpaces({ search: q, sort, limit: 24 });
+      resources = await getSpaces({ search: q, sort });
     }
   } catch (error) {
     console.error("Failed to fetch resources:", error);
@@ -34,7 +34,7 @@ async function ResourceList({ q, type }: SearchParams) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {resources.map((resource) => (
+      {resources.slice(0, 24).map((resource) => (
         <ResourceCard key={resource.id} resource={resource} type={searchType} />
       ))}
     </div>
