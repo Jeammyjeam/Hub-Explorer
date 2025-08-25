@@ -6,8 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import CodeSnippetGenerator from "@/components/code-snippet-generator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Download, GitClone, Heart, Calendar, FileText, Tag, User, Scale } from "lucide-react";
+import { Download, GitClone, Heart, Calendar, FileText, Tag, Scale } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { Input } from "@/components/ui/input";
+import CopyButton from "./copy-button";
 
 type PageProps = {
   params: {
@@ -25,6 +27,9 @@ export default async function ResourceDetailPage({ params }: PageProps) {
   const id = idParts.join("/");
   const resource = await getResourceDetails(type, id);
 
+  const resourceUrl = `https://huggingface.co/${id}`;
+  const gitCloneUrl = `${resourceUrl}.git`;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -32,7 +37,7 @@ export default async function ResourceDetailPage({ params }: PageProps) {
           {/* Header */}
           <div className="mb-8">
             <Link href={`/?type=${type}`} className="text-sm text-primary hover:underline mb-2 block capitalize">
-              &larr; Back to {type}
+              &larr; Back to {type}s
             </Link>
             <h1 className="text-4xl font-headline font-bold break-words">{resource.id}</h1>
             <p className="text-lg text-muted-foreground mt-1">
@@ -62,15 +67,13 @@ export default async function ResourceDetailPage({ params }: PageProps) {
             <CardHeader><CardTitle>Actions</CardTitle></CardHeader>
             <CardContent className="flex flex-col space-y-2">
               <Button asChild>
-                <a href={`https://huggingface.co/${id}/resolve/main`}>
+                <a href={`${resourceUrl}/resolve/main`} target="_blank" rel="noopener noreferrer">
                   <Download className="mr-2 h-4 w-4" /> Download
                 </a>
               </Button>
                <div className="relative">
-                <Input readOnly value={`git clone https://huggingface.co/${id}`} className="pr-10" />
-                <Button variant="ghost" size="icon" className="absolute top-1/2 right-1 -translate-y-1/2 h-8 w-8" onClick={() => navigator.clipboard.writeText(`git clone https://huggingface.co/${id}`)}>
-                  <GitClone className="h-4 w-4"/>
-                </Button>
+                <Input readOnly value={`git clone ${gitCloneUrl}`} className="pr-10" />
+                <CopyButton textToCopy={`git clone ${gitCloneUrl}`} />
               </div>
             </CardContent>
           </Card>
@@ -102,9 +105,4 @@ export default async function ResourceDetailPage({ params }: PageProps) {
       </div>
     </div>
   );
-}
-
-// Dummy Input for compilation
-function Input(props: any) {
-  return <input {...props} />;
 }

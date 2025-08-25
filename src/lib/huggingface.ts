@@ -22,6 +22,9 @@ async function fetchFromApi<T>(endpoint: string, params: Record<string, any> = {
   });
 
   if (!response.ok) {
+    // Log the response to get more details on the error
+    const errorBody = await response.text();
+    console.error(`API Error Response: ${response.status} ${response.statusText}`, errorBody);
     throw new Error(`Failed to fetch from ${url}: ${response.statusText}`);
   }
 
@@ -41,7 +44,7 @@ export async function getSpaces(params: GetResourcesParams): Promise<Space[]> {
 }
 
 export async function getResourceDetails(type: ResourceType, id: string): Promise<ResourceDetails> {
-  const details = await fetchFromApi<ResourceDetails>(`/${type}/${id}`);
+  const details = await fetchFromApi<ResourceDetails>(`/${type}s/${id}`);
 
   try {
     const readmeUrl = `https://huggingface.co/${id}/raw/main/README.md`;
